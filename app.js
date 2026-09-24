@@ -36,6 +36,7 @@
   function setLocation(column, row) { const same = $('filter-column').value === String(column) && $('filter-row').value === String(row); $('filter-column').value = same ? '' : column; $('filter-row').value = same ? '' : row; render(); }
   function render() {
     const visible = filtered();
+    const searching = $('search').value.trim().length > 0;
     $('total').textContent = folders.length;
     $('result-count').textContent = `${visible.length} ${visible.length === 1 ? 'carpeta' : 'carpetas'}${visible.length !== folders.length ? ` de ${folders.length}` : ' en tu archivo'}`;
     $('results').replaceChildren();
@@ -60,6 +61,7 @@
       for (let column = 1; column <= 2; column++) {
         const all = folders.filter(f => f.columna === column && f.fila === row), matching = visible.filter(f => f.columna === column && f.fila === row);
         const cell = element('button','shelf-cell'), mini = element('span','mini-folders');
+        cell.classList.toggle('search-match', searching && matching.length > 0);
         for (const folder of all.slice(0,8)) { const bar = element('span','mini-folder'); bar.style.setProperty('--folder-color', COLORS[folder.color][1]); mini.append(bar); }
         if (!all.length) mini.append(element('span','mini-placeholder','—'));
         cell.append(mini, element('span','',all.length ? `${matching.length}/${all.length} carpetas` : 'Sin carpetas'));

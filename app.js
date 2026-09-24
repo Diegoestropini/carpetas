@@ -55,7 +55,7 @@
       actions.append(edit, remove); bottom.append(location, actions); card.append(top,element('h3','',folder.nombre),bottom); $('results').append(card);
     }
     $('shelf').replaceChildren();
-    for (let row = 1; row <= 3; row++) {
+    for (let row = 3; row >= 1; row--) {
       $('shelf').append(element('span','row-label',`Fila ${row}`));
       for (let column = 1; column <= 2; column++) {
         const all = folders.filter(f => f.columna === column && f.fila === row), matching = visible.filter(f => f.columna === column && f.fila === row);

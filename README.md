@@ -8,7 +8,7 @@ Abrí `index.html` en un navegador moderno. También podés servir esta carpeta 
 
 ## Uso
 
-- Agregá un nombre, color, columna (1 o 2) y fila (1, 2 o 3). La estantería se lee de frente y las filas van de arriba hacia abajo.
+- Agregá un nombre, color, columna (1 o 2) y fila (1, 2 o 3). La estantería se lee de frente y la fila 3 está arriba, la fila 2 en el medio y la fila 1 abajo.
 - Se admiten nombres largos y repetidos: cada carpeta tiene un identificador independiente.
 - Buscá fragmentos o palabras en cualquier orden, sin distinguir mayúsculas ni tildes. Por ejemplo, `2026 servicios` encuentra `Facturas de servicios 2026`.
 - Combiná filtros de color y ubicación; pulsá una celda de la estantería para filtrar y volvé a pulsarla para quitar ese filtro. Sus números indican coincidencias/total.

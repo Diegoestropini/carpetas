@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "carpetas": [
+    { "id": "ejemplo-1", "nombre": "Facturas de servicios 2026", "color": "amarillo", "columna": 1, "fila": 1 },
+    { "id": "ejemplo-2", "nombre": "Documentación personal", "color": "verde", "columna": 1, "fila": 2 },
+    { "id": "ejemplo-3", "nombre": "Facturas de servicios 2026", "color": "azul", "columna": 2, "fila": 3 }
+  ]
+}

@@ -12,3 +12,31 @@
 @media(max-width:680px){.topbar{height:72px;padding:0 20px}.brand{font-size:25px}.local-badge{font-size:9px;padding:7px 9px}main{padding:30px 18px 0}.intro{display:block;margin-bottom:24px}h1{letter-spacing:-1.2px}.intro .primary{margin-top:22px}.subtitle{line-height:1.7}.search-panel{padding:15px}.search-field input{font-size:15px}.search-field kbd{display:none}.filter-label{width:100%}.filters{gap:8px}.filters label{flex:1}.filters select{width:100%;padding-left:8px;font-size:11px}.text-button{margin-left:0}.workspace{grid-template-columns:1fr}.section-heading{gap:5px}.sort-label{gap:0}.sort-label select{max-width:120px}aside{display:grid;grid-template-columns:1fr;gap:18px}.backup-panel{margin-top:0}.shelf-cell{min-height:83px}.cards{grid-template-columns:1fr}.card{min-height:185px}footer{gap:20px;line-height:1.7}.toast{bottom:12px}.dialog-actions{flex-wrap:wrap}}
 
 @media(max-width:680px){.filters{display:grid;grid-template-columns:1fr}.filter-label{width:auto}.filters select{font-size:13px;padding:11px;width:100%}.text-button{justify-self:start}.card-actions button{min-width:36px;min-height:36px}.location-button{min-height:36px}}
+
+/* Detalles visuales compartidos, sin modificar la distribucion del archivo. */
+.ui-icon{width:18px;height:18px;flex:none;vertical-align:middle}
+button:has(>.ui-icon){display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.search-field>span{display:flex}.search-field .ui-icon{width:23px;height:23px}
+.backup-icon .ui-icon{width:25px;height:25px}
+.icon-button .ui-icon{width:17px;height:17px}.card-actions{flex-shrink:0}
+.card-actions button{width:34px;height:34px;border-radius:8px;color:#b9c9aa}
+.card-actions button:last-child:hover{color:#ffb7a9;background:#54352e}
+.location-button{font-size:13px;line-height:1.5;font-weight:650;padding:9px 11px;border:1px solid #546442;background:#34452d;color:#e0edc5;min-height:38px}
+.location-button:hover{background:#425735;border-color:#a8bd7d}.location-button span{text-align:left}
+.search-highlight{background:#bfd28d2b;color:#e0f3b5;border-radius:3px;box-shadow:inset 0 -1px #bfd28d70;padding:0;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.shelf-panel{box-shadow:0 5px 18px #00000016,inset 0 1px #ffffff06}
+.shelf-cell{box-shadow:inset 0 5px 10px #00000035,inset 1px 0 #ffffff04,0 2px 2px #00000025;border-bottom-color:#63744e}
+.mini-folder{box-shadow:2px 1px 3px #00000045,inset 1px 0 #ffffff25}
+.card{transition:border-color .2s ease,box-shadow .2s ease;animation:card-appear .2s ease-out}
+@media(hover:hover){.card:hover{border-color:#637554;box-shadow:0 6px 20px #00000020}}
+button{transition:background .18s ease,border-color .18s ease,color .18s ease,box-shadow .18s ease,transform .18s ease}
+dialog[open]{animation:card-appear .18s ease-out}
+@keyframes card-appear{from{opacity:.65;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+.muted,.backup-panel p{font-size:13px;color:#b4c1ae}
+.search-help,.field small{font-size:12px;color:#b0bea6}
+.filter-label,.text-button,.sort-label{font-size:12px;color:#b8c6ad}
+.shelf-labels,.row-label{font-size:11px;color:#c0ceaf}.shelf-cell{font-size:11px;color:#c4d2b2}
+.shelf-caption,.backup-panel .backup-note{font-size:11px;color:#b4c2a1}
+.color-tag,.count{font-size:12px}.count{color:#dbe8c7}footer{font-size:11px;color:#adbaa3}
+@media(max-width:680px){.card-actions button{width:36px;height:36px}.location-button{font-size:12px;padding:8px}.card-bottom{flex-wrap:wrap}.sort-label{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.card,dialog[open]{animation:none}button,.card{transition:none}}

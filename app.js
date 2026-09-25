@@ -6,6 +6,46 @@
   const normalize = value => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es');
   const uid = () => globalThis.crypto?.randomUUID?.() || `folder-${Date.now()}-${Math.random().toString(36).slice(2)}`;
   const element = (tag, className, text) => { const node = document.createElement(tag); if (className) node.className = className; if (text !== undefined) node.textContent = text; return node; };
+  const ICONS = {
+    search: 'M21 21l-5-5M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0',
+    plus: 'M12 5v14M5 12h14',
+    edit: 'M14 5l5 5M4 20l5-1L21 7a2.8 2.8 0 0 0-4-4L5 15z',
+    trash: 'M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7',
+    close: 'M6 6l12 12M18 6L6 18',
+    shelf: 'M3 3h18v18H3zM12 3v18M3 9h18M3 15h18',
+    download: 'M12 3v12M7 10l5 5 5-5M4 16v5h16v-5',
+    upload: 'M12 15V3M7 8l5-5 5 5M4 16v5h16v-5',
+    archive: 'M3 3h18v5H3zM5 8v13h14V8M10 12h4'
+  };
+  function uiIcon(name) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    for (const [key,value] of Object.entries({viewBox:'0 0 24 24',fill:'none',stroke:'currentColor','stroke-width':'1.7','stroke-linecap':'round','stroke-linejoin':'round','aria-hidden':'true',focusable:'false',class:'ui-icon'})) svg.setAttribute(key,value);
+    const path = document.createElementNS(svg.namespaceURI, 'path'); path.setAttribute('d', ICONS[name]); svg.append(path); return svg;
+  }
+  function highlightedName(name) {
+    const heading = element('h3'), positions = [], ranges = [];
+    let folded = '';
+    for (const {segment,index} of new Intl.Segmenter('es', {granularity:'grapheme'}).segment(name)) {
+      const normalized = normalize(segment);
+      for (let i = 0; i < normalized.length; i++) positions.push([index,index + segment.length]);
+      folded += normalized;
+    }
+    for (const word of new Set(normalize($('search').value).trim().split(/\s+/).filter(Boolean))) {
+      for (let start = folded.indexOf(word); start !== -1; start = folded.indexOf(word,start + 1)) ranges.push([positions[start][0],positions[start + word.length - 1][1]]);
+    }
+    ranges.sort((a,b) => a[0] - b[0]);
+    const merged = [];
+    for (const range of ranges) { const last = merged[merged.length - 1]; if (last && range[0] <= last[1]) last[1] = Math.max(last[1],range[1]); else merged.push([...range]); }
+    let cursor = 0;
+    for (const [start,end] of merged) { heading.append(document.createTextNode(name.slice(cursor,start)),element('mark','search-highlight',name.slice(start,end))); cursor = end; }
+    heading.append(document.createTextNode(name.slice(cursor))); return heading;
+  }
+  for (const [id,name,label] of [['add-folder','plus','Nueva carpeta'],['export','download','Exportar'],['import','upload','Importar'],['close-form','close',''],['close-import','close',''],['dismiss-toast','close','']]) {
+    $(id).replaceChildren(uiIcon(name),document.createTextNode(label));
+  }
+  document.querySelector('.search-field > span').replaceChildren(uiIcon('search'));
+  document.querySelector('.shelf-panel .section-heading > span').replaceChildren(uiIcon('shelf'));
+  document.querySelector('.backup-icon').replaceChildren(uiIcon('archive'));
   let folders = [], editingId = null, deletingId = null, pendingImport = null, undoRecord = null, storageBlocked = false;
 
   function validate(data) {
@@ -42,18 +82,20 @@
     $('results').replaceChildren();
     if (!visible.length) {
       const empty = element('div', 'empty'); empty.append(element('span','folder-icon empty-art'), element('h3','', folders.length ? 'No encontramos esa carpeta' : 'Todo empieza con una carpeta'), element('p','', folders.length ? 'Probá con menos palabras o cambiá los filtros para ampliar la búsqueda.' : 'Agregá su nombre, elegí un color y marcá su lugar. La próxima vez, encontrarla será mucho más fácil.'));
-      const button = element('button','primary',folders.length ? 'Limpiar búsqueda' : '＋ Agregar mi primera carpeta'); button.onclick = folders.length ? resetFilters : () => openForm(); empty.append(button); $('results').append(empty);
+      const button = element('button','primary',folders.length ? 'Limpiar búsqueda' : 'Agregar mi primera carpeta'); if (!folders.length) button.prepend(uiIcon('plus')); button.onclick = folders.length ? resetFilters : () => openForm(); empty.append(button); $('results').append(empty);
     }
     for (const folder of visible) {
       const card = element('article','card');
       const top = element('div','card-top'), icon = element('span','folder-icon'); icon.style.setProperty('--folder-color', COLORS[folder.color][1]); icon.setAttribute('aria-hidden','true');
       top.append(icon, element('span','color-tag',COLORS[folder.color][0]));
-      const bottom = element('div','card-bottom'), location = element('button','location-button',`▦ Columna ${folder.columna} · Fila ${folder.fila}`);
+      const bottom = element('div','card-bottom'), location = element('button','location-button');
+      location.append(uiIcon('shelf'),element('span','',`Columna ${folder.columna} · Fila ${folder.fila}`));
       location.setAttribute('aria-label', `Filtrar por columna ${folder.columna}, fila ${folder.fila}`); location.onclick = () => setLocation(folder.columna, folder.fila);
-      const actions = element('div','card-actions'), edit = element('button','icon-button','✎'), remove = element('button','icon-button','×');
+      const actions = element('div','card-actions'), edit = element('button','icon-button'), remove = element('button','icon-button');
+      edit.append(uiIcon('edit')); remove.append(uiIcon('trash'));
       edit.setAttribute('aria-label',`Editar ${folder.nombre}`); edit.title = 'Editar carpeta'; edit.onclick = () => openForm(folder);
       remove.setAttribute('aria-label',`Eliminar ${folder.nombre}`); remove.title = 'Eliminar carpeta'; remove.onclick = () => { deletingId = folder.id; $('delete-name').textContent = folder.nombre; $('delete-dialog').showModal(); $('cancel-delete').focus(); };
-      actions.append(edit, remove); bottom.append(location, actions); card.append(top,element('h3','',folder.nombre),bottom); $('results').append(card);
+      actions.append(edit, remove); bottom.append(location, actions); card.append(top,highlightedName(folder.nombre),bottom); $('results').append(card);
     }
     $('shelf').replaceChildren();
     for (let row = 3; row >= 1; row--) {

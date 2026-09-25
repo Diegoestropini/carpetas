@@ -15,6 +15,7 @@ Abrí `index.html` en un navegador moderno. También podés servir esta carpeta 
 - Editá o eliminá desde cada tarjeta. El aviso de eliminación permite deshacer la última eliminación.
 - Exportá JSON para respaldar o trasladar el archivo. Al importar podés agregar (omite IDs existentes) o reemplazar todo. Los nombres repetidos se conservan.
 - El atajo `/` enfoca la búsqueda.
+- Nueva carpeta recuerda la última columna y fila elegidas, incluso si cancelás el formulario o recargás la app. Editar otra carpeta no modifica esa preferencia.
 
 ## Datos y privacidad
 

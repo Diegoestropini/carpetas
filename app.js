@@ -1,6 +1,13 @@
 (() => {
   'use strict';
   const KEY = 'carpetas.archivo.v1';
+  const LOCATION_KEY = 'carpetas.ultimaUbicacion.v1';
+  let lastLocation = { columna: 1, fila: 1 };
+  try {
+    const stored = JSON.parse(localStorage.getItem(LOCATION_KEY));
+    if ([1,2].includes(stored?.columna)) lastLocation.columna = stored.columna;
+    if ([1,2,3].includes(stored?.fila)) lastLocation.fila = stored.fila;
+  } catch { /* Si no hay almacenamiento disponible, recordar durante esta sesión. */ }
   const COLORS = { amarillo: ['Amarillo', '#e5be55'], verde: ['Verde', '#89ac79'], azul: ['Azul', '#7da8d3'], rojo: ['Rojo', '#d97b70'], naranja: ['Naranja', '#dfa569'], violeta: ['Violeta', '#ad93c7'], rosa: ['Rosa', '#dba0b8'], blanco: ['Blanco', '#e6e6df'], negro: ['Negro', '#52605b'], marron: ['Marrón', '#ac8968'] };
   const $ = id => document.getElementById(id);
   const normalize = value => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es');
@@ -117,7 +124,7 @@
     editingId = folder?.id || null; $('folder-form').reset(); $('form-error').textContent = '';
     $('form-title').textContent = folder ? 'Editar carpeta' : 'Nueva carpeta'; $('folder-name').value = folder?.nombre || '';
     document.querySelector(`input[name="color"][value="${folder?.color || 'amarillo'}"]`).checked = true;
-    $('folder-column').value = folder?.columna || $('filter-column').value || 1; $('folder-row').value = folder?.fila || $('filter-row').value || 1;
+    $('folder-column').value = folder?.columna ?? lastLocation.columna; $('folder-row').value = folder?.fila ?? lastLocation.fila;
     $('folder-dialog').showModal(); $('folder-name').focus();
   }
   for (const [value,[name,hex]] of Object.entries(COLORS)) {
@@ -131,6 +138,12 @@
     if (save(next)) { $('folder-dialog').close(); resetFilters(); notify(editingId ? 'Carpeta actualizada.' : 'Carpeta agregada. Ya tiene su lugar.'); }
   };
   $('add-folder').onclick = () => openForm();
+  for (const id of ['folder-column','folder-row']) $(id).addEventListener('change', () => {
+    if (editingId) return;
+    lastLocation = { columna: +$('folder-column').value, fila: +$('folder-row').value };
+    try { localStorage.setItem(LOCATION_KEY, JSON.stringify(lastLocation)); }
+    catch { /* La preferencia sigue disponible en memoria. */ }
+  });
   for (const id of ['close-form','cancel-form']) $(id).onclick = () => $('folder-dialog').close();
   for (const id of ['search','filter-color','filter-column','filter-row','sort']) $(id).addEventListener('input',render);
   $('clear-filters').onclick = resetFilters;
